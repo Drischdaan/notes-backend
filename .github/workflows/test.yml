@@ -2,7 +2,7 @@ name: Code Tests
 
 on:
   push:
-    branches: ['dev']
+    branches: ['develop']
   pull_request:
     branches: ['main']
 
@@ -18,7 +18,5 @@ jobs:
         run: yarn build
       - name: Run unit tests
         run: yarn test
-      - name: Run e2e tests
-        run: yarn test:e2e
       - name: Run coverage
         run: yarn test:cov
