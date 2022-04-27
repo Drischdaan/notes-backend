@@ -8,6 +8,7 @@ import { configOptions } from '../../_config/config';
 import { jwtOptions } from '../../_config/jwt.config';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
+import testConfigs from '../../_config/test.configs';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -49,7 +50,9 @@ describe('AuthService', () => {
           secret: faker.datatype.uuid(),
           signOptions: { expiresIn: '1m' },
         }),
-        ConfigModule.forRoot(configOptions),
+        ConfigModule.forRoot({
+          load: [testConfigs]
+        }),
       ],
       providers: [
         AuthService,
