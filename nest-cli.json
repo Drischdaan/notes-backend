@@ -3,17 +3,8 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "projects": {
-    "datamodel": {
-      "type": "library",
-      "root": "libs/datamodel",
-      "entryFile": "index",
-      "sourceRoot": "libs/datamodel/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/datamodel/tsconfig.lib.json"
-      }
-    }
   },
   "compilerOptions": {
-    "webpack": true
+    "webpack": false
   }
 }

@@ -6,6 +6,7 @@ import { cacheOptions } from './_config/cache.config';
 import { configOptions } from './_config/config';
 import { typeormConfig } from './_config/typeorm.config';
 import { HealthModule } from './health/health.module';
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { HealthModule } from './health/health.module';
     CacheModule.registerAsync(cacheOptions),
     TypeOrmModule.forRootAsync(typeormConfig),
     HealthModule,
+    AccountModule,
   ],
   controllers: [],
   providers: [
