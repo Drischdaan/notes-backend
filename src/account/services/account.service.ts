@@ -16,9 +16,16 @@ export class AccountService extends PaginationService<AccountEntity> {
     super(accountRepository);
   }
 
-  public async getAccount(uuid: string): Promise<IAccountEntity> {
+  public async getAccount(uuid: string, throwOnNotFound: boolean = true): Promise<IAccountEntity> {
     const account: IAccountEntity = await this.accountRepository.findOne({ where: { uuid } });
-    if(account === undefined)
+    if(account === undefined && throwOnNotFound)
+      throw new HttpException('Account not found', HttpStatus.BAD_REQUEST);
+    return account;
+  }
+
+  public async getAccountByName(username: string, throwOnNotFound: boolean = true): Promise<IAccountEntity> {
+    const account: IAccountEntity = await this.accountRepository.findOne({ where: { username } });
+    if(account === undefined && throwOnNotFound)
       throw new HttpException('Account not found', HttpStatus.BAD_REQUEST);
     return account;
   }
@@ -44,6 +51,12 @@ export class AccountService extends PaginationService<AccountEntity> {
   public async deleteAccount(uuid: string): Promise<void> {
     const account: IAccountEntity = await this.getAccount(uuid);
     await this.accountRepository.delete(uuid);
+  }
+
+  public async updateTokens(uuid: string, accessToken: string, refreshToken: string): Promise<IAccountEntity> {
+    const account: IAccountEntity = await this.getAccount(uuid);
+    await this.accountRepository.update(account.uuid, { accessToken, refreshToken });
+    return account;
   }
 
 }

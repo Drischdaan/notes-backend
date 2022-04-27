@@ -9,7 +9,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/license/Drischdaan/notes-backend.svg">
-  <img src="https://github.com/Drischdaan/notes-backend/actions/workflows/test.yml/badge.svg?branch=main">
+  <img src="https://github.com/Drischdaan/notes-backend/actions/workflows/test.yml/badge.svg?branch=develop">
 </p>
 
 ## Installation

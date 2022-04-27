@@ -7,6 +7,7 @@ import { configOptions } from './_config/config';
 import { typeormConfig } from './_config/typeorm.config';
 import { HealthModule } from './health/health.module';
 import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AccountModule } from './account/account.module';
     TypeOrmModule.forRootAsync(typeormConfig),
     HealthModule,
     AccountModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [

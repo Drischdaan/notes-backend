@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Query, UseGuards } from '@nestjs/common';
+import { AccessTokenGuard } from '../../auth/guards/access.guard';
 import { PaginationDto } from '../../_common/pagination/dtos/pagination.dto';
-import { AccountCreateDto } from '../dtos/create.dto';
 import { AccountUpdateDto } from '../dtos/update.dto';
 import { IAccountEntity } from '../models/account.models';
 import { AccountService } from '../services/account.service';
 
+@UseGuards(AccessTokenGuard)
 @Controller('accounts')
 export class AccountController {
 
@@ -24,13 +25,6 @@ export class AccountController {
     @Param('uuid', ParseUUIDPipe) uuid: string,
   ): Promise<IAccountEntity> {
     return await this.accountService.getAccount(uuid);
-  }
-
-  @Post()
-  public async createAccount(
-    @Body() dto: AccountCreateDto
-  ): Promise<IAccountEntity> {
-    return await this.accountService.createAccount(dto);
   }
 
   @Post(':uuid')
