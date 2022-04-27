@@ -45,7 +45,10 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        JwtModule.registerAsync(jwtOptions),
+        JwtModule.register({
+          secret: faker.datatype.uuid(),
+          signOptions: { expiresIn: '1m' },
+        }),
         ConfigModule.forRoot(configOptions),
       ],
       providers: [
