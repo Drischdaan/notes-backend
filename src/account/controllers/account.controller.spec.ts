@@ -19,6 +19,8 @@ describe('AccountController', () => {
       username: faker.internet.userName(),
       password: faker.internet.password(),
       avatar: faker.internet.avatar(),
+      accessToken: undefined,
+      refreshToken: undefined,
     });
   }
 
@@ -32,6 +34,8 @@ describe('AccountController', () => {
       username: faker.internet.userName(),
       password: faker.internet.password(),
       avatar: faker.internet.avatar(),
+      accessToken: undefined,
+      refreshToken: undefined,
     })),
     updateAccount: jest.fn().mockImplementation((uuid: string, dto: any) => {
       const account = accounts.find(account => account.uuid === uuid);

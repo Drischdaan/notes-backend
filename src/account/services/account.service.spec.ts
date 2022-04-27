@@ -19,12 +19,16 @@ describe('AccountService', () => {
       username: faker.internet.userName(),
       password: faker.internet.password(),
       avatar: faker.internet.avatar(),
+      accessToken: undefined,
+      refreshToken: undefined,
     });
   }
 
   let mockedAccountRepository = {
     find: jest.fn().mockImplementation((query: FindManyOptions<AccountEntity>) => accounts.slice(0, query.take)),
-    findOne: jest.fn().mockImplementation((query: FindOneOptions<AccountEntity>) => accounts.find(account => account.uuid === (<any>query.where).uuid)),
+    findOne: jest.fn().mockImplementation((query: FindOneOptions<AccountEntity>) => {
+      return accounts.find(account => account.uuid === (<any>query.where).uuid || account.username === (<any>query.where).username);
+    }),
     create: jest.fn().mockImplementation((dto: AccountCreateDto) => {
       const account: IAccountEntity = {
         uuid: faker.datatype.uuid(),
@@ -33,6 +37,8 @@ describe('AccountService', () => {
         username: dto.username,
         password: dto.password,
         avatar: faker.internet.avatar(),
+        accessToken: undefined,
+        refreshToken: undefined,
       };
       return account;
     }),
@@ -42,7 +48,8 @@ describe('AccountService', () => {
     }),
     update: jest.fn().mockImplementation((query: { uuid: string }, dto: any) => {
       const account = accounts.find(account => account.uuid === query.uuid);
-      Object.assign(account, dto);
+      if(account !== undefined)
+        Object.assign(account, dto);
       return account;
     }),
     delete: jest.fn().mockImplementation((uuid: string) => { accounts.splice(accounts.findIndex(account => account.uuid === uuid), 1); }),
@@ -72,19 +79,45 @@ describe('AccountService', () => {
     expect(result).toEqual(accounts.slice(0, 5));
   });
 
-  it('should return one account', async () => {
-    const result: IAccountEntity = await service.getAccount(accounts[0].uuid);
-    expect(result).toEqual(accounts[0]);
+  describe('getAccount', () => {
+    it('should return one account', async () => {
+      const result: IAccountEntity = await service.getAccount(accounts[0].uuid);
+      expect(result).toEqual(accounts[0]);
+    });
+
+    it('should throw error if account not found', async () => {
+      await expect(service.getAccount(faker.datatype.uuid())).rejects.toThrowError('Account not found');
+    });
   });
 
-  it('should create an account', async () => {
-    const result: IAccountEntity = await service.createAccount(new AccountCreateDto());
-    expect(result).toEqual(accounts[accounts.length - 1]);
+  describe('getAccountByName', () => {
+    it('should return one account', async () => {
+      const result: IAccountEntity = await service.getAccountByName(accounts[0].username);
+      expect(result).toEqual(accounts[0]);
+    });
+
+    it('should throw error if account not found', async () => {
+      await expect(service.getAccountByName(faker.internet.userName())).rejects.toThrowError('Account not found');
+    });
   });
 
-  it('should update an account', async () => {
-    const result: IAccountEntity = await service.updateAccount(accounts[0].uuid, { username: 'newUsername' });
-    expect(result).toEqual(accounts[0]);
+  describe('createAccount', () => {
+    it('should create an account', async () => {
+      const result: IAccountEntity = await service.createAccount(new AccountCreateDto());
+      expect(result).toEqual(accounts[accounts.length - 1]);
+    });
+
+    it('should throw an error if account already exists', async () => {
+      await expect(service.createAccount({ username: accounts[0].username, password: accounts[0].password })).rejects.toThrowError('Username already exists');
+    });
+  });
+
+  describe('updateAccount', () => {
+    it('should update an account', async () => {
+      const result: IAccountEntity = await service.updateAccount(accounts[0].uuid, { username: 'newUsername' });
+      expect(result).toEqual(accounts[0]);
+      expect(result.username).toBe('newUsername');
+    });
   });
 
   it('should delete an account', async () => {
@@ -92,5 +125,12 @@ describe('AccountService', () => {
     await service.deleteAccount(accounts[0].uuid);
     expect(accounts.length).toBe(length - 1);
   });
+
+  it('should update tokens', async () => {
+    const result: IAccountEntity = await service.updateTokens(accounts[0].uuid, 'newAccessToken', 'newRefreshToken');
+    expect(result.accessToken).toBe('newAccessToken');
+    expect(result.refreshToken).toBe('newRefreshToken');
+  });
+
 
 });
