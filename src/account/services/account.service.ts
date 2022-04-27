@@ -40,7 +40,7 @@ export class AccountService extends PaginationService<AccountEntity> {
   }
 
   public async updateAccount(uuid: string, dto: AccountUpdateDto): Promise<IAccountEntity> {
-    const account: IAccountEntity = await this.getAccount(uuid);
+    const account: IAccountEntity = await this.getAccount(uuid, false);
     if(account === undefined)
       throw new HttpException('Account not found', HttpStatus.BAD_REQUEST);
     await this.accountRepository.update({ uuid }, dto);
@@ -55,7 +55,7 @@ export class AccountService extends PaginationService<AccountEntity> {
 
   public async updateTokens(uuid: string, accessToken: string, refreshToken: string): Promise<IAccountEntity> {
     const account: IAccountEntity = await this.getAccount(uuid);
-    await this.accountRepository.update(account.uuid, { accessToken, refreshToken });
+    await this.accountRepository.update({ uuid: account.uuid }, { accessToken, refreshToken });
     return account;
   }
 
