@@ -16,6 +16,14 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@notes-app/datamodel/datamodel": [
+        "libs/datamodel/src"
+      ],
+      "@notes-app/datamodel/datamodel/*": [
+        "libs/datamodel/src/*"
+      ]
+    }
   }
 }
